@@ -1,4 +1,4 @@
-package com.mmall.util;
+package it.ldlife.util;
 
 import org.springframework.util.StringUtils;
 
