@@ -15,9 +15,7 @@ import com.mongodb.WriteResult;
 import it.ldlife.util.Page;
 import it.ldlife.util.ReflectionUtils;
 
-import com.mongodb.WriteResult;
-
-public class MongoBaseImpl<T> implements MongoBase<T>{
+public class MongoBaseDaoImpl<T> implements MongoBaseDao<T> {
 	
 	@Resource  
     protected MongoTemplate mongoTemplate; 

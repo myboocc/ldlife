@@ -10,7 +10,7 @@ import com.mongodb.WriteResult;
 
 import it.ldlife.util.Page;
 
-public interface MongoBase<T> {  
+public interface MongoBaseDao<T> {
 	//添加  
 //    public void insert(T entity);    
 //    //根据条件查找  
