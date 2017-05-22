@@ -2,11 +2,21 @@ package it.ldlife.pojo;
 
 import java.util.Date;
 
-public class User {
-    private Integer id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection="user")
+public class User {
+	
+	@Id
+	@Indexed(unique = true)
+    private String id;
+
+	@Indexed 
     private String username;
 
+	@Indexed
     private String password;
 
     private String email;
@@ -23,7 +33,7 @@ public class User {
 
     private Date updateTime;
 
-    public User(Integer id, String username, String password, String email, String phone, String question, String answer, Integer role, Date createTime, Date updateTime) {
+    public User(String id, String username, String password, String email, String phone, String question, String answer, Integer role, Date createTime, Date updateTime) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -40,11 +50,11 @@ public class User {
         super();
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -31,7 +31,7 @@ public class MongoBaseDaoImpl<T> implements MongoBaseDao<T> {
 
 	@Override
 	public T save(T entity) {
-		mongoTemplate.insert(entity);  
+		mongoTemplate.insert(entity);
         return entity;  
 	}
 
@@ -161,7 +161,7 @@ public class MongoBaseDaoImpl<T> implements MongoBaseDao<T> {
 	/** 
      * 获得泛型类 
      */  
-    private Class<T> getEntityClass() {  
+    protected Class<T> getEntityClass() {  
         // Type genType = getClass().getGenericSuperclass();  
         // if (!(genType instanceof ParameterizedType)) {  
         // return (Class<T>) Object.class;  

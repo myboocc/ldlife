@@ -7,9 +7,19 @@ import it.ldlife.pojo.User;
  * Created by xubinhui on 17-5-16.
  */
 public interface IUserService {
+	
+	int checkUserName(String userName);
+	
+	int checkEmail(String email);
 
     ServiceResponse<User> login(String username, String password);
 
     ServiceResponse<String> register(User user);
+
+	ServiceResponse<String> checkValid(String str, String type);
+	
+	ServiceResponse<String> selectQuestion(String userName);
+	
+	ServiceResponse<String> checkAnswer(String username,String question,String answer);
 
 }
