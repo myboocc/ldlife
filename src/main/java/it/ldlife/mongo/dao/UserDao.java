@@ -15,4 +15,12 @@ public interface UserDao extends MongoBaseDao<User> {
 	User selectQuestionByUserName(String userName);
 
 	boolean checkAnswer(String username, String question, String answer);
+
+	int updatePasswordByUsername(String username, String md5Password);
+
+	int checkPassword(String passwordOld, String id);
+
+	int checkEmailByUserId(String email, String id);
+
+	int updateUserInfo(User updateUser);
 }

@@ -22,4 +22,10 @@ public interface IUserService {
 	
 	ServiceResponse<String> checkAnswer(String username,String question,String answer);
 
+	ServiceResponse<String> forgetResetPassword(String username, String forgetToken, String passwordNew);
+
+	ServiceResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
+
+	ServiceResponse<User> updateInformation(User user);
+
 }

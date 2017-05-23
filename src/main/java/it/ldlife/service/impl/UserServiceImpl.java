@@ -118,10 +118,71 @@ public class UserServiceImpl implements IUserService {
 		if(result){
 			// 正确
 			String forgetToken = UUID.randomUUID().toString();
-			TokenCache.setKey("token_"+username, forgetToken);
+			TokenCache.setKey(TokenCache.TOKEN_PREFIX + username, forgetToken);
 			return ServiceResponse.createBySuccess(forgetToken);
 		}
 		return ServiceResponse.createByErrorMessage("问题的答案错误");
+	}
+
+	@Override
+	public ServiceResponse<String> forgetResetPassword(String username, String forgetToken, String passwordNew) {
+		if(StringUtils.isBlank(forgetToken)){
+			return ServiceResponse.createByErrorMessage("参数错误，token为空");
+		}
+		ServiceResponse validResponse = this.checkValid(username, Const.USERNAME);
+		if(validResponse.isSuccess()){
+			//用户名不存在
+			return ServiceResponse.createByErrorMessage("用户名不存在");
+		}
+		String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+		if(StringUtils.isBlank(token)){
+			return ServiceResponse.createByErrorMessage("token无效或者过期");
+		}
+		if(StringUtils.equals(token, forgetToken)){
+			String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
+			int rowCount = userDao.updatePasswordByUsername(username,md5Password);
+			if(rowCount > 0){
+				return ServiceResponse.createBySuccessMessage("修改密码成功");
+			}
+		}else{
+			return ServiceResponse.createByErrorMessage("token错误，请重新获取重置密码的token");
+		}
+		return ServiceResponse.createByErrorMessage("修改密码失败");
+	}
+
+	@Override
+	public ServiceResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
+		int resultCount = userDao.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld),user.getId());
+		if(resultCount == 0){
+			return ServiceResponse.createByErrorMessage("旧密码错误");
+		}
+		user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
+		int updateCount = userDao.update(user).getN();
+		if(updateCount > 0){
+			return ServiceResponse.createBySuccessMessage("密码更新成功");
+		}
+		return ServiceResponse.createByErrorMessage("密码更新失败");
+	}
+
+	@Override
+	public ServiceResponse<User> updateInformation(User user) {
+		//用户名不能被修改
+		//校验email不能相同
+		int resultCount = userDao.checkEmailByUserId(user.getEmail(),user.getId());
+		if(resultCount > 0){
+			return ServiceResponse.createByErrorMessage("Email已经存在，请更换Email");
+		}
+		User updateUser = new User();
+		updateUser.setId(user.getId());
+		updateUser.setEmail(user.getEmail());
+		updateUser.setPhone(user.getPhone());
+		updateUser.setQuestion(user.getQuestion());
+		updateUser.setAnswer(user.getAnswer());
+		int updateCount = userDao.updateUserInfo(updateUser);
+		if(updateCount > 0){
+			return ServiceResponse.createBySuccess("更新个人信息成功",updateUser);
+		}
+		return ServiceResponse.createByErrorMessage("更新个人信息失败");
 	}
 
 
