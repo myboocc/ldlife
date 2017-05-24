@@ -25,6 +25,14 @@ public class UserDaoImpl extends MongoBaseDaoImpl<User> implements UserDao {
     	}
 		return 0;
 	}
+	
+	@Override
+	public User selectLogin(String username, String md5Password) {
+		Query query = new Query();
+    	query.addCriteria(Criteria.where("username").is(username).and("password").is(md5Password));
+    	User user = this.mongoTemplate.findOne(query, this.getEntityClass());
+		return user;
+	}
 
 	@Override
 	public int checkEmail(String email) {
@@ -94,4 +102,6 @@ public class UserDaoImpl extends MongoBaseDaoImpl<User> implements UserDao {
 		update.set("answer", updateUser.getAnswer());
 		return this.mongoTemplate.updateFirst(query, update, this.getEntityClass()).getN();
 	}
+
+	
 }

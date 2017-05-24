@@ -9,7 +9,10 @@
 	http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="it.ldlife" annotation-config="true"/>
-
+	<mvc:annotation-driven/>
+	<!-- 启用注解 -->
+	<context:annotation-config />
+	
     <mvc:annotation-driven>
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.StringHttpMessageConverter">

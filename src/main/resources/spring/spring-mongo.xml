@@ -12,7 +12,7 @@
     
     <context:component-scan base-package="it.ldlife" annotation-config="true" />  
     <!-- 获取配置资源 -->  
-    <context:property-placeholder location="classpath:properties/mongo.properties" />  
+    <context:property-placeholder location="classpath*:properties/mongo.properties" />  
       
     <!-- <bean class="cn.mongo.util.SpringContextUtil"></bean>   -->
       

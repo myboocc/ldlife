@@ -1,6 +1,7 @@
 package it.ldlife.controller.portal;
 
 import it.ldlife.common.Const;
+import it.ldlife.common.ResponseCode;
 import it.ldlife.common.ServiceResponse;
 import it.ldlife.pojo.User;
 import it.ldlife.service.IUserService;
@@ -35,27 +36,27 @@ public class UserController {
         return response;
     }
 
-    @RequestMapping(value = "/logout",method = RequestMethod.GET)
+    @RequestMapping(value = "/logout",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> logout(HttpSession session){
         session.removeAttribute(Const.CURRENT_USER);
         return ServiceResponse.createBySuccess();
     }
 
-    @RequestMapping(value = "/register",method = RequestMethod.GET)
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> register(User user){
         ServiceResponse<String> response = iUserService.register(user);
         return response;
     }
     
-    @RequestMapping(value = "/checkValid",method = RequestMethod.GET)
+    @RequestMapping(value = "/checkValid",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> checkValid(String str, String type){
     	return iUserService.checkValid(str,type);
     }
 
-    @RequestMapping(value = "/getUserInfo",method = RequestMethod.GET)
+    @RequestMapping(value = "/getUserInfo",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<User> getUserInfo(HttpSession session){
     	User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -65,25 +66,25 @@ public class UserController {
     	return ServiceResponse.createByErrorMessage("用户未登录，无法获取当前用户的信息");
     }
     
-    @RequestMapping(value = "/forgetGetQuestion",method = RequestMethod.GET)
+    @RequestMapping(value = "/forgetGetQuestion",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> forgetGetQuestion(String username){
     	return iUserService.selectQuestion(username);
     }
     
-    @RequestMapping(value = "/forgetCheckAnswer",method = RequestMethod.GET)
+    @RequestMapping(value = "/forgetCheckAnswer",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> forgetCheckAnswer(String username,String question,String answer){
     	return iUserService.checkAnswer(username, question, answer);
     }
     
-    @RequestMapping(value = "/forgetResetPassword",method = RequestMethod.GET)
+    @RequestMapping(value = "/forgetResetPassword",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> forgetResetPassword(String username, String forgetToken,String passwordNew){
     	return iUserService.forgetResetPassword(username,forgetToken,passwordNew);
     }
     
-    @RequestMapping(value = "/resetPassword",method = RequestMethod.GET)
+    @RequestMapping(value = "/resetPassword",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<String> resetPassword(HttpSession session,String passwordOld,String passwordNew){
     	User user = (User) session.getAttribute(Const.CURRENT_USER);
@@ -93,7 +94,7 @@ public class UserController {
     	return iUserService.resetPassword(passwordOld,passwordNew,user);
     }
     
-    @RequestMapping(value = "/updateInformation",method = RequestMethod.GET)
+    @RequestMapping(value = "/updateInformation",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResponse<User> updateInformation(HttpSession session, User user){
     	User loginUser = (User) session.getAttribute(Const.CURRENT_USER);
@@ -110,6 +111,15 @@ public class UserController {
     	return response;
     }
     
+    @RequestMapping(value = "getInformation",method = RequestMethod.POST)
+    @ResponseBody
+    public ServiceResponse<User> getInformation(HttpSession session){
+        User currentUser = (User)session.getAttribute(Const.CURRENT_USER);
+        if(currentUser == null){
+            return ServiceResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录,需要强制登录status=10");
+        }
+        return iUserService.getInformation(currentUser.getId());
+    } 
     
     
 

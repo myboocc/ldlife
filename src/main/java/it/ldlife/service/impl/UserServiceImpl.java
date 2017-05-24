@@ -3,7 +3,6 @@ package it.ldlife.service.impl;
 import it.ldlife.common.Const;
 import it.ldlife.common.ServiceResponse;
 import it.ldlife.common.TokenCache;
-import it.ldlife.dao.UserMapper;
 import it.ldlife.mongo.dao.UserDao;
 import it.ldlife.pojo.User;
 import it.ldlife.service.IUserService;
@@ -25,9 +24,6 @@ import javax.annotation.Resource;
 public class UserServiceImpl implements IUserService {
 
     @Resource
-    private UserMapper userMapper;
-    
-    @Resource
     private UserDao userDao;
 
     @Override
@@ -38,7 +34,7 @@ public class UserServiceImpl implements IUserService {
             return ServiceResponse.createByErrorMessage("用户名不存在");
         }
         String md5Password = MD5Util.MD5EncodeUtf8(password);
-        User user = userMapper.selectLogin(username,md5Password);
+        User user = userDao.selectLogin(username,md5Password);
         if (user == null){
             return ServiceResponse.createByErrorMessage("密码错误");
         }
@@ -183,6 +179,18 @@ public class UserServiceImpl implements IUserService {
 			return ServiceResponse.createBySuccess("更新个人信息成功",updateUser);
 		}
 		return ServiceResponse.createByErrorMessage("更新个人信息失败");
+	}
+
+	@Override
+	public ServiceResponse<User> getInformation(String id) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("_id").is(id));
+		User user = userDao.findOne(query);
+		if(user == null){
+            return ServiceResponse.createByErrorMessage("找不到当前用户");
+        }
+        user.setPassword(StringUtils.EMPTY);
+        return ServiceResponse.createBySuccess(user);
 	}
 
 

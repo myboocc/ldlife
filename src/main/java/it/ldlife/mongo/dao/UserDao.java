@@ -23,4 +23,6 @@ public interface UserDao extends MongoBaseDao<User> {
 	int checkEmailByUserId(String email, String id);
 
 	int updateUserInfo(User updateUser);
+
+	User selectLogin(String username, String md5Password);
 }
